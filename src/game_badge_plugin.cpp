@@ -57,6 +57,8 @@ void push_css_updates(game_badge_plugin_context *ctx) {
 }
 
 static bool on_search_clicked(obs_properties_t *props, obs_property_t *prop, void *data) {
+    (void)props;
+    (void)prop;
     game_badge_plugin_context *ctx = (game_badge_plugin_context *)data;
     blog(LOG_INFO, "[Game Badge] Initiating search for: %s", ctx->search_name.c_str());
     return true;
@@ -72,6 +74,7 @@ static void gb_destroy(void *data) {
 }
 
 static obs_properties_t *gb_get_properties(void *data) {
+    (void)data;
     obs_properties_t *props = obs_properties_create();
     obs_properties_add_text(props, "api_key", "API Key", OBS_TEXT_PASSWORD);
     obs_properties_add_text(props, "search_name", "Game Name", OBS_TEXT_DEFAULT);
@@ -145,4 +148,3 @@ bool obs_module_load(void) {
     obs_register_source(&info);
     return true;
 }
-
