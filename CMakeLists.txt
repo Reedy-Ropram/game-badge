@@ -40,15 +40,17 @@ elseif(COMMAND configure_plugin_target)
     configure_plugin_target(${CMAKE_PROJECT_NAME})
 endif()
 
-# 4. Explicit Cross-Platform Installation Rules
-# This safely guarantees the compiled binaries land exactly in the /release directory
-# where the platform packagers are waiting to grab them.
+# 4. Correct Cross-Platform Installation Rules for Modules
+# By specifying LIBRARY DESTINATION, CMake knows exactly how to export 
+# a standalone compiled runtime module object.
 if(WIN32 OR LINUX)
     install(TARGETS ${CMAKE_PROJECT_NAME}
-            DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
+            LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
+            RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
     )
 elseif(APPLE)
     install(TARGETS ${CMAKE_PROJECT_NAME}
             BUNDLE DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
+            LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
     )
 endif()
