@@ -22,12 +22,11 @@ else()
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/linux/helpers.cmake")
 endif()
 
-# 4. Search for the package now that the environment is locked down
+# 4. Search for the package now that the environment is fully built
 find_package(libobs REQUIRED)
 
-# 5. Define your plugin using the template's official automated wrapper macro
-# This replaces add_library, target_sources, target_link_libraries, and install()
-obs_plugin(${CMAKE_PROJECT_NAME}
+# 5. Use the official OBS source tree macro to define and structure the plugin
+define_obs_plugin(${CMAKE_PROJECT_NAME}
     SOURCES
         src/game_badge_plugin.cpp
 )
