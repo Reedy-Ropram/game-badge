@@ -34,11 +34,21 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # 3. Native Template Architecture Integration
-# This triggers the original helper backend functions that automatically 
-# construct, sign, and install the artifact directly into the release folder
-# using the exact project name variable (${CMAKE_PROJECT_NAME}).
 if(COMMAND define_obs_plugin_target)
     define_obs_plugin_target(${CMAKE_PROJECT_NAME})
 elseif(COMMAND configure_plugin_target)
     configure_plugin_target(${CMAKE_PROJECT_NAME})
+endif()
+
+# 4. Explicit Cross-Platform Installation Rules
+# This safely guarantees the compiled binaries land exactly in the /release directory
+# where the platform packagers are waiting to grab them.
+if(WIN32 OR LINUX)
+    install(TARGETS ${CMAKE_PROJECT_NAME}
+            DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
+    )
+elseif(APPLE)
+    install(TARGETS ${CMAKE_PROJECT_NAME}
+            BUNDLE DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
+    )
 endif()
