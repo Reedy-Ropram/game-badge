@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24...3.30)
 
-project(game-badge
+project(plugintemplate-for-obs
         VERSION 1.0.0
         DESCRIPTION "OBS Studio Game Badge Plugin"
         HOMEPAGE_URL "https://github.com/Reedy-Ropram/game-badge"
@@ -34,8 +34,16 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # 3. Create the folder structure and copy the binary right after compilation
+if(WIN32)
+    set(PLUGIN_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo")
+elseif(APPLE)
+    set(PLUGIN_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/release/Release")
+else()
+    set(PLUGIN_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/release/64bit")
+endif()
+
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo"
-    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>" "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo/"
-    COMMENT "Deploying compiled binary to release/RelWithDebInfo layout"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PLUGIN_OUTPUT_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>" "${PLUGIN_OUTPUT_DIR}/"
+    COMMENT "Deploying compiled binary to release layout"
 )
