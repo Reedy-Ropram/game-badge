@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.24...3.30)
 
-# 1. Pull in the core template variables
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
-
-# 2. Define the project properties
+# 1. Define the project metadata FIRST so Windows/macOS can bind compiler variables to it
 project(game-badge
         VERSION 1.0.0
         DESCRIPTION "OBS Studio Game Badge Plugin"
         HOMEPAGE_URL "https://github.com/Reedy-Ropram/game-badge"
 )
 
-# 3. Explicitly load the platform-specific defaults and helpers that contain the path logic
+# 2. Boot up the core template variable downloader script
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
+
+# 3. Explicitly load the platform-specific defaults and helpers
 if(WIN32)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/windows/defaults.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/windows/helpers.cmake")
@@ -22,7 +22,7 @@ else()
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/linux/helpers.cmake")
 endif()
 
-# 4. Now that the template's OS helpers are active, find the package
+# 4. Search for the package now that the environment is locked down
 find_package(libobs REQUIRED)
 
 # 5. Build your plugin target module
