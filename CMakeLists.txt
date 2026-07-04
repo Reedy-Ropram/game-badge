@@ -54,7 +54,7 @@ if(APPLE)
     add_custom_command(
         TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
-        COMMAND pkgbuild --component "$<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/../.." 
+        COMMAND pkgbuild --component "$<TARGET_BUNDLE_DIR:${CMAKE_PROJECT_NAME}>" 
                          --install-location "/Library/Application Support/obs-studio/plugins" 
                          "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>/game-badge.pkg"
         COMMENT "Generating macOS installer package"
