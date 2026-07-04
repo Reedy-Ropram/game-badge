@@ -33,23 +33,12 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     OBS::libobs
 )
 
-# 3. Simple, explicit target folders for each platform layout
-if(WIN32)
-    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo"
-        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>" "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo/"
-        COMMENT "Deploying Windows binary"
-    )
-elseif(APPLE)
-    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo/plugintemplate-for-obs.plugin/Contents/MacOS"
-        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>" "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo/plugintemplate-for-obs.plugin/Contents/MacOS/"
-        COMMENT "Deploying macOS plugin bundle structure"
-    )
-else()
-    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/release/64bit"
-        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>" "${CMAKE_CURRENT_SOURCE_DIR}/release/64bit/"
-        COMMENT "Deploying Ubuntu binary"
-    )
+# 3. Native Template Architecture Integration
+# This triggers the original helper backend functions that automatically 
+# construct, sign, and install the artifact directly into the release folder
+# using the exact project name variable (${CMAKE_PROJECT_NAME}).
+if(COMMAND define_obs_plugin_target)
+    define_obs_plugin_target(${CMAKE_PROJECT_NAME})
+elseif(COMMAND configure_plugin_target)
+    configure_plugin_target(${CMAKE_PROJECT_NAME})
 endif()
