@@ -50,9 +50,10 @@ if(APPLE)
     )
 
     # Use a custom command to force the creation of the .pkg file 
-    # that the package-macos script is searching for on line 110.
+    # and ensure the output directory exists before writing.
     add_custom_command(
         TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
         COMMAND pkgbuild --component "$<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/../.." 
                          --install-location "/Library/Application Support/obs-studio/plugins" 
                          "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>/game-badge.pkg"
