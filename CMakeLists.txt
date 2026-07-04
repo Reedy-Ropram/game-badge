@@ -6,10 +6,9 @@ project(game-badge
         HOMEPAGE_URL "https://github.com/Reedy-Ropram/game-badge"
 )
 
-# 1. Run the core template variable downloader script
+# 1. Load the template bootloader and platform helpers for dependency paths
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
 
-# 2. Load the platform-specific defaults and helpers to restore dependency paths
 if(WIN32)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/windows/defaults.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/windows/helpers.cmake")
@@ -21,10 +20,9 @@ else()
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/linux/helpers.cmake")
 endif()
 
-# 3. Search for the package using the restored template paths
 find_package(libobs REQUIRED)
 
-# 4. Build your standard C++ plugin library module
+# 2. Build the plugin library module
 add_library(${CMAKE_PROJECT_NAME} MODULE)
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
@@ -35,15 +33,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     OBS::libobs
 )
 
-# 5. Create the exact nested folder structure the packaging script needs
-if(WIN32)
-    set(PLUGIN_OUTPUT_DIR "release/bin/64bit")
-elseif(APPLE)
-    set(PLUGIN_OUTPUT_DIR "release/obs-plugins")
-else()
-    set(PLUGIN_OUTPUT_DIR "release/obs-plugins/64bit")
-endif()
-
-install(TARGETS ${CMAKE_PROJECT_NAME}
-        DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/${PLUGIN_OUTPUT_DIR}"
+# 3. Create the folder structure and copy the binary right after compilation
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo"
+    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>" "${CMAKE_CURRENT_SOURCE_DIR}/release/RelWithDebInfo/"
+    COMMENT "Deploying compiled binary to release/RelWithDebInfo layout"
 )
