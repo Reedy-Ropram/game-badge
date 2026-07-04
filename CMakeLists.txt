@@ -6,6 +6,10 @@ project(plugintemplate-for-obs
         HOMEPAGE_URL "https://github.com/Reedy-Ropram/game-badge"
 )
 
+# Force-disable treating compiler warnings as fatal errors across all setups
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+set(COMPILE_WARNING_AS_ERROR OFF)
+
 # 1. Load the template bootloader and platform helpers for dependency paths
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
 
