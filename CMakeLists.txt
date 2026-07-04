@@ -17,10 +17,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     src/game_badge_plugin.cpp
 )
 
-# 4. Use the correct template target mapping
+# 4. Use the template target mapping
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE 
     libobs
 )
 
-# 5. Let the template automatically handle installations/packaging layout
-setup_plugin_target(${CMAKE_PROJECT_NAME})
+# 5. Let the template automatically handle installations/packaging layout natively
+configure_plugin_target(${CMAKE_PROJECT_NAME})
