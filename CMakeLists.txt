@@ -40,7 +40,7 @@ elseif(COMMAND configure_plugin_target)
     configure_plugin_target(${CMAKE_PROJECT_NAME})
 endif()
 
-# 4. Explicit Mac Bundle target properties
+# 4. Explicit Mac Bundle and Installer Packaging
 if(APPLE)
     set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
         BUNDLE TRUE
@@ -48,13 +48,16 @@ if(APPLE)
         MACOSX_BUNDLE_BUNDLE_NAME "game-badge"
         MACOSX_BUNDLE_GUI_IDENTIFIER "com.example.game-badge"
     )
-    
-    # CPack configuration to generate the .pkg file required by package-macos
-    set(CPACK_GENERATOR "productbuild")
-    set(CPACK_PACKAGE_NAME "game-badge")
-    set(CPACK_PACKAGE_VERSION "1.0.0")
-    set(CPACK_PACKAGE_FILE_NAME "game-badge")
-    include(CPack)
+
+    # Use a custom command to force the creation of the .pkg file 
+    # that the package-macos script is searching for on line 110.
+    add_custom_command(
+        TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND pkgbuild --component "$<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/../.." 
+                         --install-location "/Library/Application Support/obs-studio/plugins" 
+                         "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>/game-badge.pkg"
+        COMMENT "Generating macOS installer package"
+    )
 endif()
 
 # 5. Cross-Platform Installation Rules
