@@ -33,11 +33,11 @@
     },
     "platformConfig": {
         "macos": {
-            "bundleId": "com.example.plugintemplate-for-obs"
+            "bundleId": "com.example.game-badge"
         }
     },
     "name": "game-badge",
-    "displayName": "Plugin Template for OBS",
+    "displayName": "Game Badge for OBS",
     "version": "1.0.0",
     "author": "Your Name Here",
     "website": "https://example.com",
