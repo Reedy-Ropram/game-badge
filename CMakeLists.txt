@@ -10,14 +10,17 @@ project(game-badge
 # 2. Fire up the official OBS Template bootloader script
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
 
-# 3. Create the plugin binary module from your source file
+# 3. Create the plugin binary module
 add_library(${CMAKE_PROJECT_NAME} MODULE)
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     src/game_badge_plugin.cpp
 )
 
-# 4. Bind the project to the core OBS development library
+# 4. Use the correct template target mapping
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE 
-    OBS::libobs
+    libobs
 )
+
+# 5. Let the template automatically handle installations/packaging layout
+setup_plugin_target(${CMAKE_PROJECT_NAME})
