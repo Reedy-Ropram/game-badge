@@ -73,6 +73,16 @@ static void gb_destroy(void *data) {
     delete (game_badge_plugin_context *)data;
 }
 
+static uint32_t gb_get_width(void *data) {
+    (void)data;
+    return 1920; 
+}
+
+static uint32_t gb_get_height(void *data) {
+    (void)data;
+    return 1080; 
+}
+
 static obs_properties_t *gb_get_properties(void *data) {
     (void)data;
     obs_properties_t *props = obs_properties_create();
@@ -132,7 +142,6 @@ static void *gb_create(obs_data_t *settings, obs_source_t *source) {
 }
 
 OBS_DECLARE_MODULE()
-OBS_MODULE_USE_DEFAULT_LOCALE("game-badge", "en-US")
 
 bool obs_module_load(void) {
     obs_source_info info = {};
@@ -144,7 +153,10 @@ bool obs_module_load(void) {
     info.destroy = gb_destroy;
     info.update = gb_update;
     info.get_properties = gb_get_properties;
+    info.get_width = gb_get_width;
+    info.get_height = gb_get_height;
     
     obs_register_source(&info);
     return true;
 }
+
