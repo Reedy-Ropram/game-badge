@@ -10,7 +10,7 @@ project(game-badge
 # 2. Boot up the core template variable downloader script
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
 
-# 3. Explicitly load the platform-specific defaults and helpers
+# 3. Load the platform-specific defaults and helpers
 if(WIN32)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/windows/defaults.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/windows/helpers.cmake")
@@ -25,19 +25,9 @@ endif()
 # 4. Search for the package now that the environment is locked down
 find_package(libobs REQUIRED)
 
-# 5. Build your plugin target module
-add_library(${CMAKE_PROJECT_NAME} MODULE)
-
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    src/game_badge_plugin.cpp
-)
-
-# 6. Link against the target definition
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE 
-    OBS::libobs
-)
-
-# 7. FIX: Direct CMake to copy the finished binary into the 'release' folder for the packager
-install(TARGETS ${CMAKE_PROJECT_NAME}
-        DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release"
+# 5. Define your plugin using the template's official automated wrapper macro
+# This replaces add_library, target_sources, target_link_libraries, and install()
+obs_plugin(${CMAKE_PROJECT_NAME}
+    SOURCES
+        src/game_badge_plugin.cpp
 )
