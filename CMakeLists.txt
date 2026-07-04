@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24...3.30)
 
-# 1. Define the project metadata FIRST so Windows/macOS can bind compiler variables to it
+# 1. Define the project metadata
 project(game-badge
         VERSION 1.0.0
         DESCRIPTION "OBS Studio Game Badge Plugin"
@@ -35,4 +35,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # 6. Link against the target definition
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE 
     OBS::libobs
+)
+
+# 7. FIX: Direct CMake to copy the finished binary into the 'release' folder for the packager
+install(TARGETS ${CMAKE_PROJECT_NAME}
+        DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release"
 )
