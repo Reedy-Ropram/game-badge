@@ -2,7 +2,6 @@
 #include <util/platform.h>
 #include <util/dstr.h>
 #include <string>
-#include <fstream>
 #include <sstream>
 
 #define PLUGIN_ELEMENT_ID "game_badge_source"
@@ -11,27 +10,15 @@
 struct game_badge_plugin_context {
     obs_source_t *source;
     
-    // UI Values
     std::string api_key;
     std::string search_name;
     std::string custom_text;
     
-    bool show_cover;
-    bool show_title;
-    bool show_platform;
-    bool show_dev;
-    bool show_pub;
-    bool show_region;
-    bool show_country;
-    bool show_custom;
-    
-    int cover_x, cover_y;
-    int meta_x, meta_y;
-    int title_size, text_size;
+    bool show_cover, show_title, show_platform, show_dev, show_pub, show_region, show_country, show_custom;
+    int cover_x, cover_y, meta_x, meta_y, title_size, text_size;
     uint32_t text_color;
 };
 
-// Helper to convert OBS color integers to HTML Hex strings
 std::string get_hex_color(uint32_t obs_color) {
     int b = (obs_color >> 16) & 0xFF;
     int g = (obs_color >> 8) & 0xFF;
@@ -41,7 +28,6 @@ std::string get_hex_color(uint32_t obs_color) {
     return std::string(hex);
 }
 
-// Generates and pushes custom CSS to the active browser source dynamically
 void push_css_updates(game_badge_plugin_context *ctx) {
     obs_source_t *browser_src = obs_get_source_by_name(BROWSER_SOURCE_TARGET);
     if (!browser_src) return;
@@ -70,17 +56,9 @@ void push_css_updates(game_badge_plugin_context *ctx) {
     obs_source_release(browser_src);
 }
 
-// Native event triggered when user executes a search button click
 static bool on_search_clicked(obs_properties_t *props, obs_property_t *prop, void *data) {
-    (void)props;
-    (void)prop;
-    
     game_badge_plugin_context *ctx = (game_badge_plugin_context *)data;
     blog(LOG_INFO, "[Game Badge] Initiating search for: %s", ctx->search_name.c_str());
-    
-    // In a full compiled deployment, networking libraries (like libcurl bundled with OBS)
-    // resolve URLs here and output variables cleanly into game_data.json.
-    
     return true;
 }
 
@@ -94,17 +72,12 @@ static void gb_destroy(void *data) {
 }
 
 static obs_properties_t *gb_get_properties(void *data) {
-    (void)data;
-    
     obs_properties_t *props = obs_properties_create();
-    
     obs_properties_add_text(props, "api_key", "API Key", OBS_TEXT_PASSWORD);
     obs_properties_add_text(props, "search_name", "Game Name", OBS_TEXT_DEFAULT);
     obs_properties_add_button(props, "search_btn", "Search Game Data", on_search_clicked);
-    
     obs_properties_add_text(props, "custom_text", "Custom Overlay Text", OBS_TEXT_DEFAULT);
     
-    // Toggles
     obs_properties_add_bool(props, "show_cover", "Show Cover Art");
     obs_properties_add_bool(props, "show_title", "Show Title");
     obs_properties_add_bool(props, "show_platform", "Show Platform");
@@ -114,12 +87,10 @@ static obs_properties_t *gb_get_properties(void *data) {
     obs_properties_add_bool(props, "show_country", "Show Country");
     obs_properties_add_bool(props, "show_custom", "Show Custom Text");
 
-    // Layout
     obs_properties_add_int_slider(props, "cover_x", "Cover X", -500, 1920, 1);
     obs_properties_add_int_slider(props, "cover_y", "Cover Y", -500, 1080, 1);
     obs_properties_add_int_slider(props, "meta_x", "Text X", -500, 1920, 1);
     obs_properties_add_int_slider(props, "meta_y", "Text Y", -500, 1080, 1);
-    
     obs_properties_add_int_slider(props, "title_size", "Title Size", 10, 100, 1);
     obs_properties_add_int_slider(props, "text_size", "Details Size", 10, 80, 1);
     obs_properties_add_color(props, "text_color", "Text Color");
@@ -129,11 +100,9 @@ static obs_properties_t *gb_get_properties(void *data) {
 
 static void gb_update(void *data, obs_data_t *settings) {
     game_badge_plugin_context *ctx = (game_badge_plugin_context *)data;
-    
     ctx->api_key = obs_data_get_string(settings, "api_key");
     ctx->search_name = obs_data_get_string(settings, "search_name");
     ctx->custom_text = obs_data_get_string(settings, "custom_text");
-    
     ctx->show_cover = obs_data_get_bool(settings, "show_cover");
     ctx->show_title = obs_data_get_bool(settings, "show_title");
     ctx->show_platform = obs_data_get_bool(settings, "show_platform");
@@ -142,7 +111,6 @@ static void gb_update(void *data, obs_data_t *settings) {
     ctx->show_region = obs_data_get_bool(settings, "show_region");
     ctx->show_country = obs_data_get_bool(settings, "show_country");
     ctx->show_custom = obs_data_get_bool(settings, "show_custom");
-    
     ctx->cover_x = (int)obs_data_get_int(settings, "cover_x");
     ctx->cover_y = (int)obs_data_get_int(settings, "cover_y");
     ctx->meta_x = (int)obs_data_get_int(settings, "meta_x");
@@ -150,7 +118,6 @@ static void gb_update(void *data, obs_data_t *settings) {
     ctx->title_size = (int)obs_data_get_int(settings, "title_size");
     ctx->text_size = (int)obs_data_get_int(settings, "text_size");
     ctx->text_color = (uint32_t)obs_data_get_int(settings, "text_color");
-    
     push_css_updates(ctx);
 }
 
