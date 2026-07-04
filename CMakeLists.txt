@@ -40,7 +40,6 @@ elseif(COMMAND configure_plugin_target)
     configure_plugin_target(${CMAKE_PROJECT_NAME})
 endif()
 
-# Explicitly mark the target as a Mac Bundle directory layout
 if(APPLE)
     set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
         BUNDLE TRUE
@@ -50,14 +49,16 @@ if(APPLE)
     )
 endif()
 
-# 4. Correct Cross-Platform Installation Rules
+# 4. Consolidated, Comprehensive Cross-Platform Installation Rules
 if(WIN32 OR LINUX)
     install(TARGETS ${CMAKE_PROJECT_NAME}
             LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
             RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
     )
 elseif(APPLE)
+    # By providing BOTH destinations in one rule, CMake is guaranteed to pass validation
     install(TARGETS ${CMAKE_PROJECT_NAME}
             BUNDLE DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
+            LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/release/$<CONFIG>"
     )
 endif()
