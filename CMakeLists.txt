@@ -7,7 +7,7 @@ project(game-badge
         HOMEPAGE_URL "https://github.com/Reedy-Ropram/game-badge"
 )
 
-# 2. Fire up the official OBS Template bootloader script to pull down headers/libraries
+# 2. Fire up the official OBS Template bootloader script
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
 
 # 3. Create the plugin binary module
@@ -17,13 +17,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     src/game_badge_plugin.cpp
 )
 
-# 4. EXPLICITLY pass the downloaded OBS header folder paths to the compiler
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    ${OBS_TEMPLATE_INCLUDE_DIRS}
-    ${libobs_INCLUDE_DIRS}
-)
-
-# 5. Use the template target mapping
+# 4. Link to libobs and the template's common plugin path configuration target
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE 
     libobs
+    plugins-common
 )
